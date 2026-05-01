@@ -12,7 +12,7 @@
 
 Phantom-OS is an **invisible, high-performance cognitive overlay** for Windows 11. Built to act as a real-time copilot during interviews, coding sessions, and meetings without *ever* being detected by screen-sharing or recording software.
 
-<br>
+---
 
 ## 🤝 Contributing & Open Source
 
@@ -26,6 +26,12 @@ I actively invite developers to **fork this repository**, fix bugs, optimize per
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+---
+
+<br>
+
+
 
 
 
