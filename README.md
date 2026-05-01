@@ -92,7 +92,7 @@ You can install Phantom-OS using the pre-compiled installer, or you can clone an
 
 We provide a self-contained, single-click Windows Installer. You don't need to install any prerequisites.
 
-1. Navigate to the `Releases` folder in this repository.
+1. Navigate to the `Releases` Bar in this repository.
 2. Download and run `PhantomOS_Setup.exe`.
 3. *(Note: Windows SmartScreen may flag the app since it is a new, unsigned executable utilizing keyboard hooks. Click **More Info -> Run Anyway**).*
 4. Once installed, launch the app from your Start Menu.
