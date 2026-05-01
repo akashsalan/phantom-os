@@ -14,22 +14,6 @@ Phantom-OS is an **invisible, high-performance cognitive overlay** for Windows 1
 
 ---
 
-## 🤝 Contributing & Open Source
-
-Phantom-OS is completely **open-source** and community-driven. I built this to disrupt the market of overpriced AI wrappers and give developers a powerful, free tool. 
-
-I actively invite developers to **fork this repository**, fix bugs, optimize performance, and add new features. 
-
-**How to contribute:**
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-
-
----
 
 
 
@@ -158,6 +142,25 @@ Want to run the code directly or modify it yourself?
    ```powershell
    .\build_installer.ps1
    ```
+
+---
+
+
+
+## 🤝 Contributing & Open Source
+
+Phantom-OS is completely **open-source** and community-driven. I built this to disrupt the market of overpriced AI wrappers and give developers a powerful, free tool. 
+
+I actively invite developers to **fork this repository**, fix bugs, optimize performance, and add new features. 
+
+**How to contribute:**
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+
 
 ---
 
