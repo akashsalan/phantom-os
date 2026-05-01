@@ -1,0 +1,283 @@
+<Window x:Class="PhantomOS.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:markdig="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
+        Title="PhantomOS"
+        WindowState="Maximized"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        Topmost="True" ShowInTaskbar="False">
+
+    <Window.Resources>
+        <!-- Custom dark scrollbar style -->
+        <Style x:Key="DarkScrollBar" TargetType="ScrollBar">
+            <Setter Property="Width" Value="5"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Track x:Name="PART_Track" IsDirectionReversed="True">
+                            <Track.Thumb>
+                                <Thumb>
+                                    <Thumb.Style>
+                                        <Style TargetType="Thumb">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Thumb">
+                                                        <Border CornerRadius="2.5" Background="#25FFFFFF" Margin="1,2"/>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Thumb.Style>
+                                </Thumb>
+                            </Track.Thumb>
+                        </Track>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DarkScrollViewer" TargetType="ScrollViewer">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollViewer">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ScrollContentPresenter Grid.Column="0"/>
+                            <ScrollBar Grid.Column="1"
+                                       Style="{StaticResource DarkScrollBar}"
+                                       Value="{TemplateBinding VerticalOffset}"
+                                       Maximum="{TemplateBinding ScrollableHeight}"
+                                       ViewportSize="{TemplateBinding ViewportHeight}"
+                                       Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Pulsing animation for processing dot -->
+        <Storyboard x:Key="PulseAnimation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="StatusDot"
+                             Storyboard.TargetProperty="Opacity"
+                             From="1.0" To="0.25" Duration="0:0:0.7"
+                             AutoReverse="True">
+                <DoubleAnimation.EasingFunction>
+                    <SineEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <!-- Hotkey pill badge style -->
+        <Style x:Key="HotkeyPill" TargetType="Border">
+            <Setter Property="Background" Value="#14FFFFFF"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Padding" Value="7,3"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
+            <Setter Property="BorderBrush" Value="#0CFFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <!-- Label after pill -->
+        <Style x:Key="PillLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#30FFFFFF"/>
+            <Setter Property="FontSize" Value="9"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,12,0"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+
+        <!-- Pill key text -->
+        <Style x:Key="PillKey" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#60FFFFFF"/>
+            <Setter Property="FontSize" Value="9.5"/>
+            <Setter Property="FontFamily" Value="Cascadia Code, Consolas"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style TargetType="Table">
+            <Setter Property="Margin" Value="0,10,0,10"/>
+            <Setter Property="CellSpacing" Value="0"/>
+        </Style>
+        
+        <Style TargetType="TableCell">
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="BorderBrush" Value="#25FFFFFF"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+        
+        <Style TargetType="TableRow">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <!-- Overlay Panel — anchored bottom-right -->
+        <Border x:Name="OverlayPanel"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                Margin="20" MaxWidth="720" MinWidth="380" MaxHeight="560"
+                CornerRadius="20" Padding="0"
+                BorderThickness="1" RenderTransformOrigin="1,1">
+            
+            <!-- Deep glassmorphism background -->
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#F0070714" Offset="0"/>
+                    <GradientStop Color="#F2090920" Offset="0.4"/>
+                    <GradientStop Color="#F00B081E" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.BorderBrush>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#20FFFFFF" Offset="0"/>
+                    <GradientStop Color="#06FFFFFF" Offset="0.4"/>
+                    <GradientStop Color="#15AA88FF" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.BorderBrush>
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="50" Opacity="0.6"
+                                  ShadowDepth="8" Color="#02001A"/>
+            </Border.Effect>
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform x:Name="OverlayScale" ScaleX="1" ScaleY="1"/>
+                    <TranslateTransform x:Name="OverlayTranslate" X="0" Y="0"/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+            <!-- Inner glow border -->
+            <Border CornerRadius="20" Padding="24,20,24,14"
+                    BorderThickness="1" BorderBrush="#05FFFFFF">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header bar -->
+                    <Grid Grid.Row="0" Margin="0,0,0,0">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <!-- Status dot with outer glow ring -->
+                            <Grid Margin="0,0,10,0" VerticalAlignment="Center">
+                                <Ellipse x:Name="StatusGlow" Width="16" Height="16"
+                                         Opacity="0.15">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <GradientStop Color="#00DD77" Offset="0"/>
+                                            <GradientStop Color="Transparent" Offset="1"/>
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <Ellipse x:Name="StatusDot" Width="8" Height="8"
+                                         Fill="#00DD77" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                            <TextBlock Text="P H A N T O M"
+                                       Foreground="#55FFFFFF" FontSize="11.5"
+                                       FontWeight="Bold" VerticalAlignment="Center"
+                                       FontFamily="Segoe UI"/>
+                            <TextBlock x:Name="PresetLabel" Text=" · READY"
+                                       Foreground="#35FFFFFF" FontSize="11"
+                                       VerticalAlignment="Center" FontFamily="Segoe UI"/>
+                        </StackPanel>
+                        <!-- Version + stealth badge -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Border Background="#0AFFFFFF" CornerRadius="4" Padding="6,2" Margin="0,0,6,0"
+                                    BorderBrush="#08FFFFFF" BorderThickness="1">
+                                <TextBlock Text="STEALTH" Foreground="#25FFFFFF" FontSize="8" FontFamily="Segoe UI" FontWeight="SemiBold"/>
+                            </Border>
+                            <Border Background="#0AFFFFFF" CornerRadius="4" Padding="6,2"
+                                    BorderBrush="#08FFFFFF" BorderThickness="1">
+                                <TextBlock Text="v2.1" Foreground="#25FFFFFF" FontSize="8" FontFamily="Segoe UI"/>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Thin separator line -->
+                    <Border Grid.Row="1" Height="1" Margin="0,12,0,12">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="Transparent" Offset="0"/>
+                                <GradientStop Color="#15FFFFFF" Offset="0.3"/>
+                                <GradientStop Color="#15FFFFFF" Offset="0.7"/>
+                                <GradientStop Color="Transparent" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                    </Border>
+
+                    <!-- Scrollable response area -->
+                    <ScrollViewer x:Name="ResponseScroller" Grid.Row="2"
+                                  Style="{StaticResource DarkScrollViewer}"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <markdig:MarkdownViewer x:Name="OverlayMarkdown"
+                                                Markdown="Loading..."
+                                                Foreground="#C0CDD5E5" FontSize="13.5"
+                                                FontFamily="Segoe UI" Margin="0,0,8,8"/>
+                    </ScrollViewer>
+
+                    <!-- Footer hotkey pills -->
+                    <Border Grid.Row="3" Margin="0,10,0,0" Padding="0,10,0,3">
+                        <Border.BorderBrush>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="Transparent" Offset="0"/>
+                                <GradientStop Color="#10FFFFFF" Offset="0.3"/>
+                                <GradientStop Color="#10FFFFFF" Offset="0.7"/>
+                                <GradientStop Color="Transparent" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.BorderBrush>
+                        <Border.BorderThickness>
+                            <Thickness Top="1"/>
+                        </Border.BorderThickness>
+                        <WrapPanel>
+                            <Border Style="{StaticResource HotkeyPill}">
+                                <TextBlock Text="," Style="{StaticResource PillKey}"/>
+                            </Border>
+                            <TextBlock Text="Snap" Style="{StaticResource PillLabel}"/>
+
+                            <Border Style="{StaticResource HotkeyPill}">
+                                <TextBlock Text="[" Style="{StaticResource PillKey}"/>
+                            </Border>
+                            <TextBlock Text="Batch" Style="{StaticResource PillLabel}"/>
+
+                            <Border Style="{StaticResource HotkeyPill}">
+                                <TextBlock Text="]" Style="{StaticResource PillKey}"/>
+                            </Border>
+                            <TextBlock Text="Send" Style="{StaticResource PillLabel}"/>
+
+                            <Border Style="{StaticResource HotkeyPill}">
+                                <TextBlock Text="." Style="{StaticResource PillKey}"/>
+                            </Border>
+                            <TextBlock Text="Audio" Style="{StaticResource PillLabel}"/>
+
+                            <Border Style="{StaticResource HotkeyPill}">
+                                <TextBlock Text="`" Style="{StaticResource PillKey}"/>
+                            </Border>
+                            <TextBlock Text="Hide" Style="{StaticResource PillLabel}"/>
+
+                            <Border Style="{StaticResource HotkeyPill}">
+                                <TextBlock Text="F2" Style="{StaticResource PillKey}"/>
+                            </Border>
+                            <TextBlock Text="Reset" Style="{StaticResource PillLabel}"/>
+
+                            <Border Style="{StaticResource HotkeyPill}">
+                                <TextBlock Text="Del" Style="{StaticResource PillKey}"/>
+                            </Border>
+                            <TextBlock Text="Clear" Style="{StaticResource PillLabel}"/>
+
+                            <Border Style="{StaticResource HotkeyPill}">
+                                <TextBlock Text="Ctrl+↑↓" Style="{StaticResource PillKey}"/>
+                            </Border>
+                            <TextBlock Text="Scroll" Style="{StaticResource PillLabel}" Margin="0"/>
+                        </WrapPanel>
+                    </Border>
+                </Grid>
+            </Border>
+        </Border>
+    </Grid>
+</Window>
