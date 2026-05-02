@@ -22,10 +22,10 @@ Phantom-OS is an **invisible, high-performance cognitive overlay** for Windows 1
 
 
 
-## DEMO
+<!--## DEMO
 
 
-https://github.com/user-attachments/assets/a03ea3bd-39fc-4d1c-8dc2-addcaa8395e7
+ https://github.com/user-attachments/assets/a03ea3bd-39fc-4d1c-8dc2-addcaa8395e7
 
 
 
@@ -34,7 +34,7 @@ https://github.com/user-attachments/assets/26022060-d0a9-4181-84a9-c94327dce09d
 
 https://github.com/user-attachments/assets/fbab6f45-65ca-40dd-8d9b-af03ab0b16d5
 
-
+-->
 
 </div>
 
